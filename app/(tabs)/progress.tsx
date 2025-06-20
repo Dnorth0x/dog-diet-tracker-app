@@ -119,7 +119,7 @@ export default function ProgressScreen() {
         
         <View style={styles.statsRow}>
           <StatsCard
-            title="Avg. Calories"
+            title="Avg Calories"
             value={stats.averageCalories}
             subtitle="per day"
             icon={<TrendingUp size={24} color={colors.primary} />}

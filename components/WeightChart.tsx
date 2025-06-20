@@ -53,17 +53,13 @@ const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
   const maxWeight = Math.max(...weights);
   const weightRange = maxWeight - minWeight || 1; // Avoid division by zero
   
-  // Generate SVG path for the line
+  // Generate points for the line
   const points = weightEntries.map((entry, index) => {
     const weight = entry.averageWeight || entry.amWeight || entry.pmWeight || 0;
     const x = (index / (weightEntries.length - 1)) * chartWidth;
     const y = chartHeight - ((weight - minWeight) / weightRange) * (chartHeight - 40);
     return { x, y, weight, date: entry.date };
   });
-  
-  const pathData = points
-    .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
-    .join(' ');
 
   return (
     <View style={styles.container}>
