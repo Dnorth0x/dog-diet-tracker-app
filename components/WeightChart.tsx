@@ -10,7 +10,7 @@ interface WeightChartProps {
 }
 
 const { width } = Dimensions.get('window');
-const chartWidth = width - 64;
+const chartWidth = width - 64; // Account for padding
 const chartHeight = 200;
 
 const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
@@ -26,6 +26,7 @@ const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
     );
   }
   
+  // Get entries with weight data, sorted by date
   const weightEntries = entries
     .filter(entry => entry.averageWeight || entry.amWeight || entry.pmWeight)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
@@ -43,14 +44,16 @@ const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
     );
   }
   
+  // Calculate chart data
   const weights = weightEntries.map(entry => 
     entry.averageWeight || entry.amWeight || entry.pmWeight || 0
   );
   
   const minWeight = Math.min(...weights);
   const maxWeight = Math.max(...weights);
-  const weightRange = maxWeight - minWeight || 1;
+  const weightRange = maxWeight - minWeight || 1; // Avoid division by zero
   
+  // Generate points for the line
   const points = weightEntries.map((entry, index) => {
     const weight = entry.averageWeight || entry.amWeight || entry.pmWeight || 0;
     const x = (index / (weightEntries.length - 1)) * chartWidth;
@@ -58,6 +61,7 @@ const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
     return { x, y, weight, date: entry.date };
   });
 
+  // Calculate weight change safely
   const latestWeight = points[points.length - 1]?.weight || 0;
   const firstWeight = points[0]?.weight || 0;
   const weightChange = latestWeight - firstWeight;
