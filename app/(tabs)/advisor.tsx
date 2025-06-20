@@ -155,8 +155,7 @@ export default function CalorieAdvisorScreen() {
             
             <View style={styles.disclaimer}>
               <Text style={styles.disclaimerText}>
-                💡 This is a general guideline. Consult your veterinarian for personalized advice, 
-                especially if your dog has health conditions or special dietary needs.
+                💡 This is a general guideline. Consult your veterinarian for personalized advice, especially if your dog has health conditions or special dietary needs.
               </Text>
             </View>
           </View>

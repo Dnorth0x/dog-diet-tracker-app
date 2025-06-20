@@ -28,7 +28,6 @@ export default function DailyLogScreen() {
   const [followedPlan, setFollowedPlan] = useState(existingEntry?.followedPlanToday ?? true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Calculate suggested food amounts based on transition plan
   const suggestedOldFood = progress && foodAmount ? 
     (parseFloat(foodAmount) * progress.currentPhase.oldFoodPercentage / 100).toFixed(1) : '';
   const suggestedNewFood = progress && foodAmount ? 
@@ -75,7 +74,6 @@ export default function DailyLogScreen() {
     }
   };
   
-  // Calculate average weight safely
   const calculateAverageWeight = () => {
     const am = parseFloat(amWeight);
     const pm = parseFloat(pmWeight);
