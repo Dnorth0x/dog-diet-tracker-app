@@ -75,6 +75,16 @@ export default function DailyLogScreen() {
     }
   };
   
+  // Calculate average weight safely
+  const calculateAverageWeight = () => {
+    const am = parseFloat(amWeight);
+    const pm = parseFloat(pmWeight);
+    if (!isNaN(am) && !isNaN(pm)) {
+      return ((am + pm) / 2).toFixed(1);
+    }
+    return null;
+  };
+  
   if (!activeProfile) {
     return (
       <View style={styles.container}>
@@ -138,9 +148,9 @@ export default function DailyLogScreen() {
               />
             </View>
           </View>
-          {amWeight && pmWeight && (
+          {calculateAverageWeight() && (
             <Text style={styles.averageWeight}>
-              Average: {((parseFloat(amWeight) + parseFloat(pmWeight)) / 2).toFixed(1)} lbs
+              Average: {calculateAverageWeight()} lbs
             </Text>
           )}
         </View>

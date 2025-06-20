@@ -61,6 +61,12 @@ const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
     return { x, y, weight, date: entry.date };
   });
 
+  // Calculate weight change safely
+  const latestWeight = points[points.length - 1]?.weight || 0;
+  const firstWeight = points[0]?.weight || 0;
+  const weightChange = latestWeight - firstWeight;
+  const weightChangeText = weightChange >= 0 ? `+${weightChange.toFixed(1)}` : weightChange.toFixed(1);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Weight Trends</Text>
@@ -72,7 +78,6 @@ const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
         </View>
         
         <View style={styles.chartArea}>
-          {/* Grid lines */}
           <View style={styles.gridLines}>
             {[0, 1, 2].map(i => (
               <View 
@@ -85,7 +90,6 @@ const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
             ))}
           </View>
           
-          {/* Data points */}
           {points.map((point, index) => (
             <View
               key={index}
@@ -99,7 +103,6 @@ const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
             />
           ))}
           
-          {/* Trend line (simplified with View components) */}
           {points.slice(0, -1).map((point, index) => {
             const nextPoint = points[index + 1];
             const length = Math.sqrt(
@@ -125,7 +128,6 @@ const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
         </View>
       </View>
       
-      {/* X-axis labels */}
       <View style={styles.xAxisLabels}>
         <Text style={styles.axisLabel}>
           {formatShortDate(new Date(weightEntries[0].date))}
@@ -140,11 +142,10 @@ const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
       
       <View style={styles.summary}>
         <Text style={styles.summaryText}>
-          Latest: {points[points.length - 1].weight.toFixed(1)} lbs
+          Latest: {latestWeight.toFixed(1)} lbs
         </Text>
         <Text style={styles.summaryText}>
-          Change: {(points[points.length - 1].weight - points[0].weight >= 0 ? '+' : '')}
-          {(points[points.length - 1].weight - points[0].weight).toFixed(1)} lbs
+          Change: {weightChangeText} lbs
         </Text>
       </View>
     </View>
