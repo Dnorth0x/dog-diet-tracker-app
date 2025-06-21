@@ -6,7 +6,7 @@ import {
   PressableProps, 
   ActivityIndicator 
 } from 'react-native';
-import { colors } from '@/constants/colors';
+import { useAppSettingsStore } from '@/store/appSettingsStore';
 
 interface ButtonProps extends PressableProps {
   title: string;
@@ -25,6 +25,10 @@ const Button: React.FC<ButtonProps> = ({
   style,
   ...props 
 }) => {
+  const { getColors, getFontSizes } = useAppSettingsStore();
+  const colors = getColors();
+  const fontSizes = getFontSizes();
+  
   const getBackgroundColor = () => {
     if (disabled) return colors.gray300;
     
@@ -76,59 +80,48 @@ const Button: React.FC<ButtonProps> = ({
   const getFontSize = () => {
     switch (size) {
       case 'small':
-        return 14;
+        return fontSizes.sm;
       case 'medium':
-        return 16;
+        return fontSizes.base;
       case 'large':
-        return 18;
+        return fontSizes.lg;
       default:
-        return 16;
+        return fontSizes.base;
     }
   };
 
+  const styles = StyleSheet.create({
+    button: {
+      borderRadius: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+      backgroundColor: getBackgroundColor(),
+      borderColor: getBorderColor(),
+      ...getPadding(),
+    },
+    text: {
+      fontWeight: '600',
+      color: getTextColor(),
+      fontSize: getFontSize(),
+    },
+  });
+
   return (
     <Pressable
-      style={[
-        styles.button,
-        {
-          backgroundColor: getBackgroundColor(),
-          borderColor: getBorderColor(),
-          ...getPadding(),
-        },
-        style,
-      ]}
+      style={[styles.button, style]}
       disabled={disabled || isLoading}
       {...props}
     >
       {isLoading ? (
         <ActivityIndicator color={getTextColor()} />
       ) : (
-        <Text
-          style={[
-            styles.text,
-            {
-              color: getTextColor(),
-              fontSize: getFontSize(),
-            },
-          ]}
-        >
+        <Text style={styles.text}>
           {title}
         </Text>
       )}
     </Pressable>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-  },
-  text: {
-    fontWeight: '600',
-  },
-});
 
 export default Button;

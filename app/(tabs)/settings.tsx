@@ -1,9 +1,8 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View, Text, Switch, Alert } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, Switch, Alert, TouchableOpacity } from 'react-native';
 import { Stack } from 'expo-router';
-import { colors } from '@/constants/colors';
 import { useAppSettingsStore } from '@/store/appSettingsStore';
-import { Bell, Scale, Utensils, Moon, Info, HelpCircle } from 'lucide-react-native';
+import { Bell, Scale, Utensils, Moon, Sun, Palette, Type, Info, HelpCircle, Check } from 'lucide-react-native';
 
 export default function SettingsScreen() {
   const { 
@@ -12,8 +11,16 @@ export default function SettingsScreen() {
     reminderEnabled, 
     transitionReminderEnabled, 
     theme,
-    updateSettings 
+    accentColor,
+    fontSize,
+    updateSettings,
+    getColors,
+    getFontSizes
   } = useAppSettingsStore();
+  
+  const colors = getColors();
+  const fontSizes = getFontSizes();
+  const styles = createStyles(colors, fontSizes);
   
   const handleWeightUnitToggle = () => {
     updateSettings({ 
@@ -35,18 +42,46 @@ export default function SettingsScreen() {
     updateSettings({ transitionReminderEnabled: !transitionReminderEnabled });
   };
   
+  const handleThemeToggle = () => {
+    updateSettings({ theme: theme === 'light' ? 'dark' : 'light' });
+  };
+  
+  const handleAccentColorChange = (color: string) => {
+    updateSettings({ accentColor: color as any });
+  };
+  
+  const handleFontSizeChange = (size: string) => {
+    updateSettings({ fontSize: size as any });
+  };
+  
   const showComingSoon = () => {
     Alert.alert('Coming Soon', 'This feature will be available in a future update.');
   };
+
+  const accentColors = [
+    { key: 'blue', name: 'Ocean Blue', color: '#6A8CAF' },
+    { key: 'green', name: 'Forest Green', color: '#7CB342' },
+    { key: 'purple', name: 'Royal Purple', color: '#8E24AA' },
+    { key: 'orange', name: 'Sunset Orange', color: '#FB8C00' },
+    { key: 'pink', name: 'Cherry Pink', color: '#E91E63' },
+  ];
+
+  const fontSizeOptions = [
+    { key: 'small', name: 'Small', description: 'Compact text' },
+    { key: 'medium', name: 'Medium', description: 'Default size' },
+    { key: 'large', name: 'Large', description: 'Easy to read' },
+  ];
 
   return (
     <>
       <Stack.Screen 
         options={{
           title: "Settings",
+          headerStyle: { backgroundColor: colors.white },
+          headerTitleStyle: { color: colors.gray800 },
         }}
       />
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <ScrollView style={[styles.container]} contentContainerStyle={styles.content}>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Units</Text>
           
@@ -134,34 +169,107 @@ export default function SettingsScreen() {
           
           <View style={styles.settingItem}>
             <View style={styles.settingInfo}>
-              <Moon size={20} color={colors.gray600} />
+              {theme === 'dark' ? (
+                <Moon size={20} color={colors.gray600} />
+              ) : (
+                <Sun size={20} color={colors.gray600} />
+              )}
               <View>
                 <Text style={styles.settingLabel}>Dark Mode</Text>
-                <Text style={styles.settingDescription}>Coming soon</Text>
+                <Text style={styles.settingDescription}>
+                  {theme === 'dark' ? 'Dark theme active' : 'Light theme active'}
+                </Text>
               </View>
             </View>
-            <Text style={styles.comingSoon}>Soon</Text>
+            <Switch
+              value={theme === 'dark'}
+              onValueChange={handleThemeToggle}
+              trackColor={{ false: colors.gray300, true: colors.primary }}
+              thumbColor={colors.white}
+            />
+          </View>
+          
+          <View style={styles.settingContainer}>
+            <View style={styles.settingInfo}>
+              <Palette size={20} color={colors.gray600} />
+              <View>
+                <Text style={styles.settingLabel}>Accent Color</Text>
+                <Text style={styles.settingDescription}>Choose your favorite color theme</Text>
+              </View>
+            </View>
+            <View style={styles.colorGrid}>
+              {accentColors.map((color) => (
+                <TouchableOpacity
+                  key={color.key}
+                  style={[
+                    styles.colorOption,
+                    { backgroundColor: color.color },
+                    accentColor === color.key && styles.selectedColor
+                  ]}
+                  onPress={() => handleAccentColorChange(color.key)}
+                >
+                  {accentColor === color.key && (
+                    <Check size={16} color={colors.white} />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+          
+          <View style={styles.settingContainer}>
+            <View style={styles.settingInfo}>
+              <Type size={20} color={colors.gray600} />
+              <View>
+                <Text style={styles.settingLabel}>Font Size</Text>
+                <Text style={styles.settingDescription}>Adjust text size for better readability</Text>
+              </View>
+            </View>
+            <View style={styles.fontSizeOptions}>
+              {fontSizeOptions.map((option) => (
+                <TouchableOpacity
+                  key={option.key}
+                  style={[
+                    styles.fontSizeOption,
+                    fontSize === option.key && { backgroundColor: colors.primary }
+                  ]}
+                  onPress={() => handleFontSizeChange(option.key)}
+                >
+                  <Text style={[
+                    styles.fontSizeText,
+                    fontSize === option.key && { color: colors.white }
+                  ]}>
+                    {option.name}
+                  </Text>
+                  <Text style={[
+                    styles.fontSizeDescription,
+                    fontSize === option.key && { color: colors.white }
+                  ]}>
+                    {option.description}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
         </View>
         
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Support</Text>
           
-          <View style={styles.settingItem}>
+          <TouchableOpacity style={styles.settingItem} onPress={showComingSoon}>
             <View style={styles.settingInfo}>
               <HelpCircle size={20} color={colors.gray600} />
               <Text style={styles.settingLabel}>Help & FAQ</Text>
             </View>
             <Text style={styles.arrow}>›</Text>
-          </View>
+          </TouchableOpacity>
           
-          <View style={styles.settingItem}>
+          <TouchableOpacity style={styles.settingItem} onPress={showComingSoon}>
             <View style={styles.settingInfo}>
               <Info size={20} color={colors.gray600} />
               <Text style={styles.settingLabel}>About</Text>
             </View>
             <Text style={styles.arrow}>›</Text>
-          </View>
+          </TouchableOpacity>
         </View>
         
         <View style={styles.footer}>
@@ -173,7 +281,7 @@ export default function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any, fontSizes: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.gray50,
@@ -193,7 +301,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: fontSizes.lg,
     fontWeight: '600',
     color: colors.gray800,
     marginBottom: 16,
@@ -206,6 +314,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.gray100,
   },
+  settingContainer: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.gray100,
+  },
   settingInfo: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -213,12 +326,12 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   settingLabel: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.gray700,
     fontWeight: '500',
   },
   settingDescription: {
-    fontSize: 12,
+    fontSize: fontSizes.sm,
     color: colors.gray500,
     marginTop: 2,
   },
@@ -228,20 +341,49 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   unitText: {
-    fontSize: 14,
+    fontSize: fontSizes.sm,
     fontWeight: '500',
-  },
-  comingSoon: {
-    fontSize: 12,
-    color: colors.gray500,
-    backgroundColor: colors.gray200,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
   },
   arrow: {
     fontSize: 20,
     color: colors.gray400,
+  },
+  colorGrid: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 12,
+    flexWrap: 'wrap',
+  },
+  colorOption: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 3,
+    borderColor: 'transparent',
+  },
+  selectedColor: {
+    borderColor: colors.gray300,
+  },
+  fontSizeOptions: {
+    marginTop: 12,
+    gap: 8,
+  },
+  fontSizeOption: {
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: colors.gray100,
+  },
+  fontSizeText: {
+    fontSize: fontSizes.base,
+    fontWeight: '500',
+    color: colors.gray700,
+  },
+  fontSizeDescription: {
+    fontSize: fontSizes.sm,
+    color: colors.gray500,
+    marginTop: 2,
   },
   footer: {
     alignItems: 'center',
@@ -249,7 +391,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   footerText: {
-    fontSize: 12,
+    fontSize: fontSizes.sm,
     color: colors.gray500,
     marginBottom: 4,
   },

@@ -9,6 +9,8 @@ interface AppSettingsState extends AppSettings {
   // Actions
   updateSettings: (updates: Partial<AppSettings>) => void;
   resetSettings: () => void;
+  getColors: () => any;
+  getFontSizes: () => any;
 }
 
 const defaultSettings: AppSettings = {
@@ -17,7 +19,9 @@ const defaultSettings: AppSettings = {
   reminderEnabled: false,
   reminderTime: '08:00',
   transitionReminderEnabled: true,
-  theme: 'system',
+  theme: 'light',
+  accentColor: 'blue',
+  fontSize: 'medium',
 };
 
 export const useAppSettingsStore = create<AppSettingsState>()(
@@ -32,6 +36,18 @@ export const useAppSettingsStore = create<AppSettingsState>()(
       
       resetSettings: () => {
         set({ ...defaultSettings, isLoading: false });
+      },
+      
+      getColors: () => {
+        const { theme, accentColor } = get();
+        const { getColors } = require('@/constants/colors');
+        return getColors(theme, accentColor);
+      },
+      
+      getFontSizes: () => {
+        const { fontSize } = get();
+        const { fontSizes } = require('@/constants/colors');
+        return fontSizes[fontSize as keyof typeof fontSizes];
       },
     }),
     {

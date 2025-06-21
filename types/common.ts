@@ -12,5 +12,7 @@ export interface AppSettings {
   reminderEnabled: boolean;
   reminderTime: string; // HH:MM format
   transitionReminderEnabled: boolean;
-  theme: 'light' | 'dark' | 'system';
+  theme: 'light' | 'dark';
+  accentColor: 'blue' | 'green' | 'purple' | 'orange' | 'pink';
+  fontSize: 'small' | 'medium' | 'large';
 }

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, Text, View, TextInput, Switch, Alert } from 'react-native';
 import { Stack } from 'expo-router';
-import { colors } from '@/constants/colors';
 import { useDogProfileStore } from '@/store/dogProfileStore';
 import { useFeedingStore } from '@/store/feedingStore';
 import { useTransitionStore } from '@/store/transitionStore';
+import { useAppSettingsStore } from '@/store/appSettingsStore';
 import Button from '@/components/Button';
 import { Calendar, Save } from 'lucide-react-native';
 
@@ -12,6 +12,11 @@ export default function DailyLogScreen() {
   const { getActiveProfile } = useDogProfileStore();
   const { addEntry, updateEntry, getEntryByDate } = useFeedingStore();
   const { getActivePlan, getCurrentProgress } = useTransitionStore();
+  const { getColors, getFontSizes } = useAppSettingsStore();
+  
+  const colors = getColors();
+  const fontSizes = getFontSizes();
+  const styles = createStyles(colors, fontSizes);
   
   const activeProfile = getActiveProfile();
   const activePlan = activeProfile ? getActivePlan(activeProfile.id) : null;
@@ -98,6 +103,8 @@ export default function DailyLogScreen() {
       <Stack.Screen 
         options={{
           title: `${activeProfile.name}'s Daily Log`,
+          headerStyle: { backgroundColor: colors.white },
+          headerTitleStyle: { color: colors.gray800 },
           headerRight: () => (
             <Calendar size={24} color={colors.gray600} style={{ marginRight: 16 }} />
           ),
@@ -237,7 +244,7 @@ export default function DailyLogScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any, fontSizes: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.gray50,
@@ -249,7 +256,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   date: {
-    fontSize: 24,
+    fontSize: fontSizes['2xl'],
     fontWeight: '700',
     color: colors.gray800,
     marginBottom: 8,
@@ -260,13 +267,13 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   transitionText: {
-    fontSize: 14,
+    fontSize: fontSizes.sm,
     fontWeight: '600',
     color: colors.white,
     marginBottom: 4,
   },
   transitionDescription: {
-    fontSize: 12,
+    fontSize: fontSizes.xs,
     color: colors.white,
     opacity: 0.9,
   },
@@ -282,7 +289,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: fontSizes.lg,
     fontWeight: '600',
     color: colors.gray800,
     marginBottom: 16,
@@ -295,7 +302,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputLabel: {
-    fontSize: 14,
+    fontSize: fontSizes.sm,
     fontWeight: '500',
     color: colors.gray700,
     marginBottom: 8,
@@ -304,11 +311,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.gray100,
     borderRadius: 8,
     padding: 12,
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.gray800,
   },
   averageWeight: {
-    fontSize: 14,
+    fontSize: fontSizes.sm,
     color: colors.primary,
     fontWeight: '500',
     marginTop: 8,
@@ -321,7 +328,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   breakdownTitle: {
-    fontSize: 14,
+    fontSize: fontSizes.sm,
     fontWeight: '600',
     color: colors.gray700,
     marginBottom: 8,
@@ -330,7 +337,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   breakdownText: {
-    fontSize: 14,
+    fontSize: fontSizes.sm,
     color: colors.gray600,
   },
   switchContainer: {
@@ -339,7 +346,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   switchLabel: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.gray700,
     flex: 1,
   },
@@ -347,7 +354,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.gray100,
     borderRadius: 8,
     padding: 12,
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.gray800,
     minHeight: 100,
   },
@@ -356,7 +363,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   errorText: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.error,
     textAlign: 'center',
     margin: 20,
