@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View, Text, TextInput, Alert } from 'react-native';
 import { Stack } from 'expo-router';
-import { colors } from '@/constants/colors';
 import { useDogProfileStore } from '@/store/dogProfileStore';
+import { useAppSettingsStore } from '@/store/appSettingsStore';
 import { getCaloriesForWeight, getFoodAmountForCalories } from '@/constants/caloricGuidance';
 import { WeightGoal, ActivityLevel } from '@/types/CaloricGuidance';
 import Button from '@/components/Button';
@@ -11,6 +11,12 @@ import { Picker } from '@react-native-picker/picker';
 
 export default function CalorieAdvisorScreen() {
   const { getActiveProfile } = useDogProfileStore();
+  const { getColors, getFontSizes, getBorderRadius } = useAppSettingsStore();
+  
+  const colors = getColors();
+  const fontSizes = getFontSizes();
+  const borderRadius = getBorderRadius();
+  const styles = createStyles(colors, fontSizes, borderRadius);
   
   const activeProfile = getActiveProfile();
   
@@ -56,6 +62,8 @@ export default function CalorieAdvisorScreen() {
       <Stack.Screen 
         options={{
           title: "Calorie Advisor",
+          headerStyle: { backgroundColor: colors.white },
+          headerTitleStyle: { color: colors.gray800 },
           headerRight: () => (
             <Calculator size={24} color={colors.gray600} style={{ marginRight: 16 }} />
           ),
@@ -177,7 +185,7 @@ export default function CalorieAdvisorScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any, fontSizes: any, borderRadius: number) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.gray50,
@@ -189,19 +197,19 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    fontSize: 24,
+    fontSize: fontSizes['2xl'],
     fontWeight: '700',
     color: colors.gray800,
     marginBottom: 8,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.gray600,
     lineHeight: 22,
   },
   section: {
     backgroundColor: colors.white,
-    borderRadius: 12,
+    borderRadius: borderRadius,
     padding: 16,
     marginBottom: 16,
     shadowColor: colors.black,
@@ -211,7 +219,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: fontSizes.lg,
     fontWeight: '600',
     color: colors.gray800,
     marginBottom: 16,
@@ -220,26 +228,26 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   inputLabel: {
-    fontSize: 14,
+    fontSize: fontSizes.sm,
     fontWeight: '500',
     color: colors.gray700,
     marginBottom: 8,
   },
   input: {
     backgroundColor: colors.gray100,
-    borderRadius: 8,
+    borderRadius: borderRadius * 0.67,
     padding: 12,
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.gray800,
   },
   inputHint: {
-    fontSize: 12,
+    fontSize: fontSizes.xs,
     color: colors.gray500,
     marginTop: 4,
   },
   pickerContainer: {
     backgroundColor: colors.gray100,
-    borderRadius: 8,
+    borderRadius: borderRadius * 0.67,
     overflow: 'hidden',
   },
   picker: {
@@ -250,7 +258,7 @@ const styles = StyleSheet.create({
   },
   recommendationSection: {
     backgroundColor: colors.white,
-    borderRadius: 12,
+    borderRadius: borderRadius,
     padding: 16,
     marginBottom: 16,
     shadowColor: colors.black,
@@ -266,13 +274,13 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   recommendationTitle: {
-    fontSize: 18,
+    fontSize: fontSizes.lg,
     fontWeight: '600',
     color: colors.gray800,
   },
   recommendationCard: {
     backgroundColor: colors.primary,
-    borderRadius: 8,
+    borderRadius: borderRadius * 0.67,
     padding: 16,
     marginBottom: 16,
   },
@@ -283,21 +291,21 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   recommendationLabel: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.white,
   },
   recommendationValue: {
-    fontSize: 20,
+    fontSize: fontSizes.xl,
     fontWeight: '700',
     color: colors.white,
   },
   disclaimer: {
     backgroundColor: colors.gray50,
-    borderRadius: 8,
+    borderRadius: borderRadius * 0.67,
     padding: 12,
   },
   disclaimerText: {
-    fontSize: 12,
+    fontSize: fontSizes.xs,
     color: colors.gray600,
     lineHeight: 16,
   },
@@ -305,7 +313,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tip: {
-    fontSize: 14,
+    fontSize: fontSizes.sm,
     color: colors.gray700,
     lineHeight: 20,
   },

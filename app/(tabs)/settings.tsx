@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, View, Text, Switch, Alert, TouchableOpacity } from 'react-native';
 import { Stack } from 'expo-router';
 import { useAppSettingsStore } from '@/store/appSettingsStore';
-import { Bell, Scale, Utensils, Moon, Sun, Palette, Type, Info, HelpCircle, Check } from 'lucide-react-native';
+import { Bell, Scale, Utensils, Moon, Sun, Palette, Type, Info, HelpCircle, Check, Zap, Square } from 'lucide-react-native';
 
 export default function SettingsScreen() {
   const { 
@@ -13,14 +13,18 @@ export default function SettingsScreen() {
     theme,
     accentColor,
     fontSize,
+    animationSpeed,
+    cardRadius,
     updateSettings,
     getColors,
-    getFontSizes
+    getFontSizes,
+    getBorderRadius
   } = useAppSettingsStore();
   
   const colors = getColors();
   const fontSizes = getFontSizes();
-  const styles = createStyles(colors, fontSizes);
+  const borderRadius = getBorderRadius();
+  const styles = createStyles(colors, fontSizes, borderRadius);
   
   const handleWeightUnitToggle = () => {
     updateSettings({ 
@@ -54,6 +58,14 @@ export default function SettingsScreen() {
     updateSettings({ fontSize: size as any });
   };
   
+  const handleAnimationSpeedChange = (speed: string) => {
+    updateSettings({ animationSpeed: speed as any });
+  };
+  
+  const handleCardRadiusChange = (radius: string) => {
+    updateSettings({ cardRadius: radius as any });
+  };
+  
   const showComingSoon = () => {
     Alert.alert('Coming Soon', 'This feature will be available in a future update.');
   };
@@ -70,6 +82,18 @@ export default function SettingsScreen() {
     { key: 'small', name: 'Small', description: 'Compact text' },
     { key: 'medium', name: 'Medium', description: 'Default size' },
     { key: 'large', name: 'Large', description: 'Easy to read' },
+  ];
+
+  const animationSpeedOptions = [
+    { key: 'slow', name: 'Slow', description: 'Relaxed animations' },
+    { key: 'normal', name: 'Normal', description: 'Default speed' },
+    { key: 'fast', name: 'Fast', description: 'Snappy animations' },
+  ];
+
+  const cardRadiusOptions = [
+    { key: 'sharp', name: 'Sharp', description: 'Minimal corners' },
+    { key: 'rounded', name: 'Rounded', description: 'Soft corners' },
+    { key: 'very-rounded', name: 'Very Rounded', description: 'Pill-shaped' },
   ];
 
   return (
@@ -250,6 +274,76 @@ export default function SettingsScreen() {
               ))}
             </View>
           </View>
+
+          <View style={styles.settingContainer}>
+            <View style={styles.settingInfo}>
+              <Zap size={20} color={colors.gray600} />
+              <View>
+                <Text style={styles.settingLabel}>Animation Speed</Text>
+                <Text style={styles.settingDescription}>Control how fast animations play</Text>
+              </View>
+            </View>
+            <View style={styles.fontSizeOptions}>
+              {animationSpeedOptions.map((option) => (
+                <TouchableOpacity
+                  key={option.key}
+                  style={[
+                    styles.fontSizeOption,
+                    animationSpeed === option.key && { backgroundColor: colors.primary }
+                  ]}
+                  onPress={() => handleAnimationSpeedChange(option.key)}
+                >
+                  <Text style={[
+                    styles.fontSizeText,
+                    animationSpeed === option.key && { color: colors.white }
+                  ]}>
+                    {option.name}
+                  </Text>
+                  <Text style={[
+                    styles.fontSizeDescription,
+                    animationSpeed === option.key && { color: colors.white }
+                  ]}>
+                    {option.description}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.settingContainer}>
+            <View style={styles.settingInfo}>
+              <Square size={20} color={colors.gray600} />
+              <View>
+                <Text style={styles.settingLabel}>Card Style</Text>
+                <Text style={styles.settingDescription}>Choose your preferred card corner style</Text>
+              </View>
+            </View>
+            <View style={styles.fontSizeOptions}>
+              {cardRadiusOptions.map((option) => (
+                <TouchableOpacity
+                  key={option.key}
+                  style={[
+                    styles.fontSizeOption,
+                    cardRadius === option.key && { backgroundColor: colors.primary }
+                  ]}
+                  onPress={() => handleCardRadiusChange(option.key)}
+                >
+                  <Text style={[
+                    styles.fontSizeText,
+                    cardRadius === option.key && { color: colors.white }
+                  ]}>
+                    {option.name}
+                  </Text>
+                  <Text style={[
+                    styles.fontSizeDescription,
+                    cardRadius === option.key && { color: colors.white }
+                  ]}>
+                    {option.description}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
         </View>
         
         <View style={styles.section}>
@@ -281,7 +375,7 @@ export default function SettingsScreen() {
   );
 }
 
-const createStyles = (colors: any, fontSizes: any) => StyleSheet.create({
+const createStyles = (colors: any, fontSizes: any, borderRadius: number) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.gray50,
@@ -291,7 +385,7 @@ const createStyles = (colors: any, fontSizes: any) => StyleSheet.create({
   },
   section: {
     backgroundColor: colors.white,
-    borderRadius: 12,
+    borderRadius: borderRadius,
     padding: 16,
     marginBottom: 16,
     shadowColor: colors.black,

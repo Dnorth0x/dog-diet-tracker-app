@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { FeedingEntry } from '@/types/FeedingEntry';
-import { colors } from '@/constants/colors';
 import { formatShortDate } from '@/utils/dateUtils';
+import { useAppSettingsStore } from '@/store/appSettingsStore';
 
 interface WeightChartProps {
   entries: FeedingEntry[];
@@ -14,7 +14,13 @@ const chartWidth = width - 64; // Account for padding
 const chartHeight = 200;
 
 const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
+  const { getColors, getFontSizes, getBorderRadius } = useAppSettingsStore();
+  const colors = getColors();
+  const fontSizes = getFontSizes();
+  const borderRadius = getBorderRadius();
+  
   if (entries.length < 2) {
+    const styles = createStyles(colors, fontSizes, borderRadius);
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Weight Trends</Text>
@@ -33,6 +39,7 @@ const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
     .slice(-days);
   
   if (weightEntries.length < 2) {
+    const styles = createStyles(colors, fontSizes, borderRadius);
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Weight Trends</Text>
@@ -66,6 +73,8 @@ const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
   const firstWeight = points[0]?.weight || 0;
   const weightChange = latestWeight - firstWeight;
   const weightChangeText = weightChange >= 0 ? `+${weightChange.toFixed(1)}` : weightChange.toFixed(1);
+
+  const styles = createStyles(colors, fontSizes, borderRadius);
 
   return (
     <View style={styles.container}>
@@ -152,10 +161,10 @@ const WeightChart: React.FC<WeightChartProps> = ({ entries, days = 14 }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any, fontSizes: any, borderRadius: number) => StyleSheet.create({
   container: {
     backgroundColor: colors.white,
-    borderRadius: 12,
+    borderRadius: borderRadius,
     padding: 16,
     marginBottom: 16,
     shadowColor: colors.black,
@@ -165,7 +174,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   title: {
-    fontSize: 18,
+    fontSize: fontSizes.lg,
     fontWeight: '600',
     color: colors.gray800,
     marginBottom: 16,
@@ -175,15 +184,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.gray50,
-    borderRadius: 8,
+    borderRadius: borderRadius * 0.67,
   },
   emptyText: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.gray600,
     marginBottom: 4,
   },
   emptySubtext: {
-    fontSize: 12,
+    fontSize: fontSizes.sm,
     color: colors.gray500,
   },
   chartContainer: {
@@ -196,7 +205,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   axisLabel: {
-    fontSize: 12,
+    fontSize: fontSizes.sm,
     color: colors.gray500,
     textAlign: 'right',
   },
@@ -249,7 +258,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.gray200,
   },
   summaryText: {
-    fontSize: 14,
+    fontSize: fontSizes.sm,
     color: colors.gray600,
   },
 });

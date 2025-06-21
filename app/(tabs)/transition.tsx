@@ -1,9 +1,9 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View, Text, Alert } from 'react-native';
 import { Stack } from 'expo-router';
-import { colors } from '@/constants/colors';
 import { useDogProfileStore } from '@/store/dogProfileStore';
 import { useTransitionStore } from '@/store/transitionStore';
+import { useAppSettingsStore } from '@/store/appSettingsStore';
 import TransitionProgressCard from '@/components/TransitionProgressCard';
 import TransitionPhaseList from '@/components/TransitionPhaseList';
 import EmptyState from '@/components/EmptyState';
@@ -13,6 +13,12 @@ import { ArrowRightLeft, Plus } from 'lucide-react-native';
 export default function TransitionScreen() {
   const { getActiveProfile } = useDogProfileStore();
   const { getActivePlan, getCurrentProgress, addPlan, deactivateAllPlans } = useTransitionStore();
+  const { getColors, getFontSizes, getBorderRadius } = useAppSettingsStore();
+  
+  const colors = getColors();
+  const fontSizes = getFontSizes();
+  const borderRadius = getBorderRadius();
+  const styles = createStyles(colors, fontSizes, borderRadius);
   
   const activeProfile = getActiveProfile();
   const activePlan = activeProfile ? getActivePlan(activeProfile.id) : null;
@@ -57,6 +63,8 @@ export default function TransitionScreen() {
         <Stack.Screen 
           options={{
             title: "Food Transition",
+            headerStyle: { backgroundColor: colors.white },
+            headerTitleStyle: { color: colors.gray800 },
             headerRight: () => (
               <ArrowRightLeft size={24} color={colors.gray600} style={{ marginRight: 16 }} />
             ),
@@ -79,6 +87,8 @@ export default function TransitionScreen() {
       <Stack.Screen 
         options={{
           title: "Food Transition",
+          headerStyle: { backgroundColor: colors.white },
+          headerTitleStyle: { color: colors.gray800 },
           headerRight: () => (
             <ArrowRightLeft size={24} color={colors.gray600} style={{ marginRight: 16 }} />
           ),
@@ -124,7 +134,7 @@ export default function TransitionScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any, fontSizes: any, borderRadius: number) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.gray50,
@@ -136,18 +146,18 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   planTitle: {
-    fontSize: 24,
+    fontSize: fontSizes['2xl'],
     fontWeight: '700',
     color: colors.gray800,
     marginBottom: 4,
   },
   planSubtitle: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.gray600,
   },
   section: {
     backgroundColor: colors.white,
-    borderRadius: 12,
+    borderRadius: borderRadius,
     padding: 16,
     marginBottom: 16,
     shadowColor: colors.black,
@@ -157,7 +167,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: fontSizes.lg,
     fontWeight: '600',
     color: colors.gray800,
     marginBottom: 16,
@@ -166,7 +176,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tip: {
-    fontSize: 14,
+    fontSize: fontSizes.sm,
     color: colors.gray700,
     lineHeight: 20,
   },

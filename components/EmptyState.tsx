@@ -17,9 +17,10 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   buttonTitle,
   onButtonPress,
 }) => {
-  const { getColors, getFontSizes } = useAppSettingsStore();
+  const { getColors, getFontSizes, getBorderRadius } = useAppSettingsStore();
   const colors = getColors();
   const fontSizes = getFontSizes();
+  const borderRadius = getBorderRadius();
   
   const styles = StyleSheet.create({
     container: {

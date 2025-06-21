@@ -25,9 +25,10 @@ const Button: React.FC<ButtonProps> = ({
   style,
   ...props 
 }) => {
-  const { getColors, getFontSizes } = useAppSettingsStore();
+  const { getColors, getFontSizes, getBorderRadius } = useAppSettingsStore();
   const colors = getColors();
   const fontSizes = getFontSizes();
+  const borderRadius = getBorderRadius();
   
   const getBackgroundColor = () => {
     if (disabled) return colors.gray300;
@@ -92,7 +93,7 @@ const Button: React.FC<ButtonProps> = ({
 
   const styles = StyleSheet.create({
     button: {
-      borderRadius: 8,
+      borderRadius: borderRadius * 0.67, // Slightly smaller radius for buttons
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 1,

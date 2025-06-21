@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View, Text, Dimensions } from 'react-native';
 import { Stack } from 'expo-router';
-import { colors } from '@/constants/colors';
 import { useDogProfileStore } from '@/store/dogProfileStore';
 import { useFeedingStore } from '@/store/feedingStore';
+import { useAppSettingsStore } from '@/store/appSettingsStore';
 import WeightChart from '@/components/WeightChart';
 import StatsCard from '@/components/StatsCard';
 import EmptyState from '@/components/EmptyState';
@@ -14,6 +14,12 @@ const { width } = Dimensions.get('window');
 export default function ProgressScreen() {
   const { getActiveProfile } = useDogProfileStore();
   const { getEntriesForDog, getRecentEntries } = useFeedingStore();
+  const { getColors, getFontSizes, getBorderRadius } = useAppSettingsStore();
+  
+  const colors = getColors();
+  const fontSizes = getFontSizes();
+  const borderRadius = getBorderRadius();
+  const styles = createStyles(colors, fontSizes, borderRadius);
   
   const activeProfile = getActiveProfile();
   const allEntries = activeProfile ? getEntriesForDog(activeProfile.id) : [];
@@ -73,6 +79,8 @@ export default function ProgressScreen() {
         <Stack.Screen 
           options={{
             title: `${activeProfile.name}'s Progress`,
+            headerStyle: { backgroundColor: colors.white },
+            headerTitleStyle: { color: colors.gray800 },
           }}
         />
         <View style={styles.container}>
@@ -92,6 +100,8 @@ export default function ProgressScreen() {
       <Stack.Screen 
         options={{
           title: `${activeProfile.name}'s Progress`,
+          headerStyle: { backgroundColor: colors.white },
+          headerTitleStyle: { color: colors.gray800 },
           headerRight: () => (
             <TrendingUp size={24} color={colors.gray600} style={{ marginRight: 16 }} />
           ),
@@ -159,7 +169,7 @@ export default function ProgressScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any, fontSizes: any, borderRadius: number) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.gray50,
@@ -168,7 +178,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: fontSizes.lg,
     fontWeight: '600',
     color: colors.gray800,
     marginBottom: 12,
@@ -181,7 +191,7 @@ const styles = StyleSheet.create({
   },
   section: {
     backgroundColor: colors.white,
-    borderRadius: 12,
+    borderRadius: borderRadius,
     padding: 16,
     marginTop: 8,
     shadowColor: colors.black,
@@ -199,11 +209,11 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.gray100,
   },
   trendLabel: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.gray700,
   },
   trendValue: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
     fontWeight: '600',
   },
 });

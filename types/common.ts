@@ -15,4 +15,6 @@ export interface AppSettings {
   theme: 'light' | 'dark';
   accentColor: 'blue' | 'green' | 'purple' | 'orange' | 'pink';
   fontSize: 'small' | 'medium' | 'large';
+  animationSpeed: 'slow' | 'normal' | 'fast';
+  cardRadius: 'sharp' | 'rounded' | 'very-rounded';
 }

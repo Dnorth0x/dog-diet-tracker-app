@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { Stack } from 'expo-router';
-import { colors } from '@/constants/colors';
 import { useDogProfileStore } from '@/store/dogProfileStore';
+import { useAppSettingsStore } from '@/store/appSettingsStore';
 import Button from '@/components/Button';
 import EmptyState from '@/components/EmptyState';
 import { Dog, Camera, Edit3, Plus } from 'lucide-react-native';
 
 export default function ProfileScreen() {
   const { profiles, getActiveProfile, updateProfile, addProfile, setActiveProfile } = useDogProfileStore();
+  const { getColors, getFontSizes, getBorderRadius } = useAppSettingsStore();
+  
+  const colors = getColors();
+  const fontSizes = getFontSizes();
+  const borderRadius = getBorderRadius();
+  const styles = createStyles(colors, fontSizes, borderRadius);
   
   const activeProfile = getActiveProfile();
   
@@ -80,6 +86,8 @@ export default function ProfileScreen() {
       <Stack.Screen 
         options={{
           title: "Dog Profile",
+          headerStyle: { backgroundColor: colors.white },
+          headerTitleStyle: { color: colors.gray800 },
           headerRight: () => (
             <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
               <Edit3 size={24} color={colors.gray600} style={{ marginRight: 16 }} />
@@ -266,7 +274,7 @@ export default function ProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any, fontSizes: any, borderRadius: number) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.gray50,
@@ -278,7 +286,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.white,
-    borderRadius: 12,
+    borderRadius: borderRadius,
     padding: 16,
     marginBottom: 16,
     shadowColor: colors.black,
@@ -314,25 +322,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   profileName: {
-    fontSize: 24,
+    fontSize: fontSizes['2xl'],
     fontWeight: '700',
     color: colors.gray800,
     marginBottom: 4,
   },
   nameInput: {
-    fontSize: 24,
+    fontSize: fontSizes['2xl'],
     fontWeight: '700',
     color: colors.gray800,
     marginBottom: 4,
     padding: 0,
   },
   profileAge: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.gray600,
   },
   section: {
     backgroundColor: colors.white,
-    borderRadius: 12,
+    borderRadius: borderRadius,
     padding: 16,
     marginBottom: 16,
     shadowColor: colors.black,
@@ -342,7 +350,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: fontSizes.lg,
     fontWeight: '600',
     color: colors.gray800,
     marginBottom: 16,
@@ -356,28 +364,28 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputLabel: {
-    fontSize: 14,
+    fontSize: fontSizes.sm,
     fontWeight: '500',
     color: colors.gray700,
     marginBottom: 8,
   },
   input: {
     backgroundColor: colors.gray100,
-    borderRadius: 8,
+    borderRadius: borderRadius * 0.67,
     padding: 12,
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.gray800,
   },
   inputValue: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.gray800,
     paddingVertical: 12,
   },
   notesInput: {
     backgroundColor: colors.gray100,
-    borderRadius: 8,
+    borderRadius: borderRadius * 0.67,
     padding: 12,
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: colors.gray800,
     minHeight: 100,
   },
@@ -401,12 +409,12 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.gray100,
   },
   profileItemName: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
     fontWeight: '500',
     color: colors.gray800,
   },
   profileItemBreed: {
-    fontSize: 14,
+    fontSize: fontSizes.sm,
     color: colors.gray600,
   },
   addButton: {

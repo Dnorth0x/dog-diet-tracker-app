@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { TransitionProgress, TransitionPlan } from '@/types/TransitionPhase';
-import { colors } from '@/constants/colors';
+import { useAppSettingsStore } from '@/store/appSettingsStore';
 import { ArrowRight, Calendar, Target } from 'lucide-react-native';
 
 interface TransitionProgressCardProps {
@@ -10,12 +10,122 @@ interface TransitionProgressCardProps {
 }
 
 const TransitionProgressCard: React.FC<TransitionProgressCardProps> = ({ progress, plan }) => {
+  const { getColors, getFontSizes, getBorderRadius } = useAppSettingsStore();
+  const colors = getColors();
+  const fontSizes = getFontSizes();
+  const borderRadius = getBorderRadius();
+  
   const getProgressColor = (percent: number) => {
     if (percent >= 80) return colors.success;
     if (percent >= 50) return colors.primary;
     if (percent >= 25) return colors.warning;
     return colors.error;
   };
+
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: colors.white,
+      borderRadius: borderRadius,
+      padding: 16,
+      marginBottom: 16,
+      shadowColor: colors.black,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.05,
+      shadowRadius: 8,
+      elevation: 2,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    title: {
+      fontSize: fontSizes.lg,
+      fontWeight: '600',
+      color: colors.gray800,
+    },
+    dayCounter: {
+      fontSize: fontSizes.sm,
+      color: colors.gray600,
+      backgroundColor: colors.gray100,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: borderRadius * 0.33,
+    },
+    progressBarContainer: {
+      marginBottom: 16,
+    },
+    progressBarBackground: {
+      height: 8,
+      backgroundColor: colors.gray200,
+      borderRadius: borderRadius * 0.33,
+      overflow: 'hidden',
+      marginBottom: 8,
+    },
+    progressBarFill: {
+      height: '100%',
+      borderRadius: borderRadius * 0.33,
+    },
+    progressPercent: {
+      fontSize: fontSizes.xs,
+      color: colors.gray600,
+      textAlign: 'center',
+    },
+    phaseInfo: {
+      marginBottom: 16,
+    },
+    phaseTitle: {
+      fontSize: fontSizes.base,
+      fontWeight: '600',
+      color: colors.gray800,
+      marginBottom: 4,
+    },
+    phaseDescription: {
+      fontSize: fontSizes.sm,
+      color: colors.gray600,
+      lineHeight: 20,
+    },
+    mixRatio: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 16,
+      gap: 12,
+    },
+    foodRatio: {
+      flex: 1,
+    },
+    ratioBar: {
+      height: 6,
+      borderRadius: borderRadius * 0.25,
+      overflow: 'hidden',
+      marginBottom: 6,
+    },
+    ratioFill: {
+      height: '100%',
+      borderRadius: borderRadius * 0.25,
+    },
+    ratioLabel: {
+      fontSize: fontSizes.xs,
+      color: colors.gray600,
+    },
+    stats: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingTop: 12,
+      borderTopWidth: 1,
+      borderTopColor: colors.gray200,
+    },
+    statItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+    },
+    statText: {
+      fontSize: fontSizes.xs,
+      color: colors.gray600,
+    },
+  });
 
   return (
     <View style={styles.container}>
@@ -106,110 +216,5 @@ const TransitionProgressCard: React.FC<TransitionProgressCardProps> = ({ progres
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.white,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    shadowColor: colors.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.gray800,
-  },
-  dayCounter: {
-    fontSize: 14,
-    color: colors.gray600,
-    backgroundColor: colors.gray100,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  progressBarContainer: {
-    marginBottom: 16,
-  },
-  progressBarBackground: {
-    height: 8,
-    backgroundColor: colors.gray200,
-    borderRadius: 4,
-    overflow: 'hidden',
-    marginBottom: 8,
-  },
-  progressBarFill: {
-    height: '100%',
-    borderRadius: 4,
-  },
-  progressPercent: {
-    fontSize: 12,
-    color: colors.gray600,
-    textAlign: 'center',
-  },
-  phaseInfo: {
-    marginBottom: 16,
-  },
-  phaseTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.gray800,
-    marginBottom: 4,
-  },
-  phaseDescription: {
-    fontSize: 14,
-    color: colors.gray600,
-    lineHeight: 20,
-  },
-  mixRatio: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-    gap: 12,
-  },
-  foodRatio: {
-    flex: 1,
-  },
-  ratioBar: {
-    height: 6,
-    borderRadius: 3,
-    overflow: 'hidden',
-    marginBottom: 6,
-  },
-  ratioFill: {
-    height: '100%',
-    borderRadius: 3,
-  },
-  ratioLabel: {
-    fontSize: 12,
-    color: colors.gray600,
-  },
-  stats: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: colors.gray200,
-  },
-  statItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  statText: {
-    fontSize: 12,
-    color: colors.gray600,
-  },
-});
 
 export default TransitionProgressCard;

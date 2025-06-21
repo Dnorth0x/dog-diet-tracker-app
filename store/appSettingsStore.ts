@@ -11,6 +11,8 @@ interface AppSettingsState extends AppSettings {
   resetSettings: () => void;
   getColors: () => any;
   getFontSizes: () => any;
+  getAnimationDuration: () => number;
+  getBorderRadius: () => number;
 }
 
 const defaultSettings: AppSettings = {
@@ -22,6 +24,8 @@ const defaultSettings: AppSettings = {
   theme: 'light',
   accentColor: 'blue',
   fontSize: 'medium',
+  animationSpeed: 'normal',
+  cardRadius: 'rounded',
 };
 
 export const useAppSettingsStore = create<AppSettingsState>()(
@@ -48,6 +52,24 @@ export const useAppSettingsStore = create<AppSettingsState>()(
         const { fontSize } = get();
         const { fontSizes } = require('@/constants/colors');
         return fontSizes[fontSize as keyof typeof fontSizes];
+      },
+      
+      getAnimationDuration: () => {
+        const { animationSpeed } = get();
+        switch (animationSpeed) {
+          case 'slow': return 800;
+          case 'fast': return 200;
+          default: return 400;
+        }
+      },
+      
+      getBorderRadius: () => {
+        const { cardRadius } = get();
+        switch (cardRadius) {
+          case 'sharp': return 4;
+          case 'very-rounded': return 20;
+          default: return 12;
+        }
       },
     }),
     {

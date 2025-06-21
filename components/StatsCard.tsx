@@ -10,15 +10,16 @@ interface StatsCardProps {
 }
 
 const StatsCard: React.FC<StatsCardProps> = ({ title, value, subtitle, icon }) => {
-  const { getColors, getFontSizes } = useAppSettingsStore();
+  const { getColors, getFontSizes, getBorderRadius } = useAppSettingsStore();
   const colors = getColors();
   const fontSizes = getFontSizes();
+  const borderRadius = getBorderRadius();
   
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.white,
-      borderRadius: 12,
+      borderRadius: borderRadius,
       padding: 16,
       shadowColor: colors.black,
       shadowOffset: { width: 0, height: 2 },
